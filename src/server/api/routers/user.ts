@@ -4,6 +4,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { addDays, isWithinInterval, startOfDay } from "date-fns";
 
 export const userRouter = createTRPCRouter({
   getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
@@ -76,7 +77,7 @@ export const userRouter = createTRPCRouter({
       });
       return { booking };
     }),
-  
+
   updateBooking: protectedProcedure
     .input(
       z.object({
@@ -113,4 +114,56 @@ export const userRouter = createTRPCRouter({
       });
       return { campground };
     }),
+
+  // getAvailableDates: publicProcedure
+  //   .input(
+  //     z.object({
+  //       campgroundId: z.string(),
+  //       startDate: z.coerce.date(),
+  //     }),
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     const { campgroundId, startDate } = input;
+  //     const endDate = addDays(startDate, 7);
+
+  //     const bookings = await ctx.db.booking.findMany({
+  //       where: {
+  //         campgroundId,
+  //         OR: [
+  //           {
+  //             startDate: {
+  //               gte: startDate,
+  //               lt: endDate,
+  //             },
+  //           },
+  //           {
+  //             endDate: {
+  //               gt: startDate,
+  //               lte: endDate,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     });
+
+  //     const availableDates: Date[] = [];
+  //     let currentDate = startOfDay(startDate);
+
+  //     while (currentDate < endDate) {
+  //       const isBooked = bookings.some((booking) =>
+  //         isWithinInterval(currentDate, {
+  //           start: booking.startDate,
+  //           end: booking.endDate,
+  //         }),
+  //       );
+
+  //       if (!isBooked) {
+  //         availableDates.push(currentDate);
+  //       }
+
+  //       currentDate = addDays(currentDate, 1);
+  //     }
+
+  //     return { availableDates };
+  //   }),
 });
