@@ -17,6 +17,9 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["tailwindui.com"], // Remove later
+  },
 };
 
 export default config;
