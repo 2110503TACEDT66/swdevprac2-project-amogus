@@ -49,6 +49,7 @@ model User {
   tel           String?
   role          role      @default(USER)
   createdAt     DateTime  @default(now())
+  password      String
 }
 
 enum role {

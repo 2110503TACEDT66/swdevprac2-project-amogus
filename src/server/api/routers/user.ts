@@ -7,6 +7,23 @@ import {
 import { addDays, isWithinInterval, startOfDay } from "date-fns";
 
 export const userRouter = createTRPCRouter({
+  register: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        password: z.string(),
+        name: z.string(),
+        tel: z.string(),
+        image: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.create({
+        data: input,
+      });
+      return { user };
+    }),
+
   getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
       where: { id: ctx.session.user.id },
