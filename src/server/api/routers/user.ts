@@ -4,8 +4,26 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { addDays, isWithinInterval, startOfDay } from "date-fns";
 
 export const userRouter = createTRPCRouter({
+  register: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        password: z.string(),
+        name: z.string(),
+        tel: z.string(),
+        image: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.create({
+        data: input,
+      });
+      return { user };
+    }),
+
   getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
       where: { id: ctx.session.user.id },
@@ -76,7 +94,7 @@ export const userRouter = createTRPCRouter({
       });
       return { booking };
     }),
-  
+
   updateBooking: protectedProcedure
     .input(
       z.object({
@@ -112,5 +130,57 @@ export const userRouter = createTRPCRouter({
         where: { id: input.id },
       });
       return { campground };
+    }),
+
+  getAvailableDates: publicProcedure
+    .input(
+      z.object({
+        campgroundId: z.string(),
+        startDate: z.coerce.date(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { campgroundId, startDate } = input;
+      const endDate = addDays(startDate, 7);
+
+      const bookings = await ctx.db.booking.findMany({
+        where: {
+          campgroundId,
+          OR: [
+            {
+              startDate: {
+                gte: startDate,
+                lt: endDate,
+              },
+            },
+            {
+              endDate: {
+                gt: startDate,
+                lte: endDate,
+              },
+            },
+          ],
+        },
+      });
+
+      const availableDates: Date[] = [];
+      let currentDate = startOfDay(startDate);
+
+      while (currentDate < endDate) {
+        const isBooked = bookings.some((booking) =>
+          isWithinInterval(currentDate, {
+            start: booking.startDate,
+            end: booking.endDate,
+          }),
+        );
+
+        if (!isBooked) {
+          availableDates.push(currentDate);
+        }
+
+        currentDate = addDays(currentDate, 1);
+      }
+
+      return { availableDates };
     }),
 });
