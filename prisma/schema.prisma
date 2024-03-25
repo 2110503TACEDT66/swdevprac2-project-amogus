@@ -72,6 +72,8 @@ model Booking {
   createdById String
   campground  Campground  @relation(fields: [campgroundId], references: [id])
   campgroundId String
+  startDate   DateTime
+  endDate     DateTime
 
   @@index([createdAt])
 }
