@@ -115,55 +115,55 @@ export const userRouter = createTRPCRouter({
       return { campground };
     }),
 
-  // getAvailableDates: publicProcedure
-  //   .input(
-  //     z.object({
-  //       campgroundId: z.string(),
-  //       startDate: z.coerce.date(),
-  //     }),
-  //   )
-  //   .query(async ({ ctx, input }) => {
-  //     const { campgroundId, startDate } = input;
-  //     const endDate = addDays(startDate, 7);
+  getAvailableDates: publicProcedure
+    .input(
+      z.object({
+        campgroundId: z.string(),
+        startDate: z.coerce.date(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { campgroundId, startDate } = input;
+      const endDate = addDays(startDate, 7);
 
-  //     const bookings = await ctx.db.booking.findMany({
-  //       where: {
-  //         campgroundId,
-  //         OR: [
-  //           {
-  //             startDate: {
-  //               gte: startDate,
-  //               lt: endDate,
-  //             },
-  //           },
-  //           {
-  //             endDate: {
-  //               gt: startDate,
-  //               lte: endDate,
-  //             },
-  //           },
-  //         ],
-  //       },
-  //     });
+      const bookings = await ctx.db.booking.findMany({
+        where: {
+          campgroundId,
+          OR: [
+            {
+              startDate: {
+                gte: startDate,
+                lt: endDate,
+              },
+            },
+            {
+              endDate: {
+                gt: startDate,
+                lte: endDate,
+              },
+            },
+          ],
+        },
+      });
 
-  //     const availableDates: Date[] = [];
-  //     let currentDate = startOfDay(startDate);
+      const availableDates: Date[] = [];
+      let currentDate = startOfDay(startDate);
 
-  //     while (currentDate < endDate) {
-  //       const isBooked = bookings.some((booking) =>
-  //         isWithinInterval(currentDate, {
-  //           start: booking.startDate,
-  //           end: booking.endDate,
-  //         }),
-  //       );
+      while (currentDate < endDate) {
+        const isBooked = bookings.some((booking) =>
+          isWithinInterval(currentDate, {
+            start: booking.startDate,
+            end: booking.endDate,
+          }),
+        );
 
-  //       if (!isBooked) {
-  //         availableDates.push(currentDate);
-  //       }
+        if (!isBooked) {
+          availableDates.push(currentDate);
+        }
 
-  //       currentDate = addDays(currentDate, 1);
-  //     }
+        currentDate = addDays(currentDate, 1);
+      }
 
-  //     return { availableDates };
-  //   }),
+      return { availableDates };
+    }),
 });
