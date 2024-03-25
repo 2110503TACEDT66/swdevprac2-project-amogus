@@ -76,7 +76,7 @@ export const userRouter = createTRPCRouter({
       });
       return { booking };
     }),
-  
+
   updateBooking: protectedProcedure
     .input(
       z.object({
