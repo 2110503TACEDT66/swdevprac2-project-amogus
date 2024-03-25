@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 const navigation = [
   { name: "Browse", href: "/campgrounds" },
-  { name: "Your Bookings", href: "/bookings" },
+  { name: "Your Bookings", href: "/your-bookings" },
   { name: "Among Us", href: "/among-us" },
 ];
 
@@ -112,20 +112,20 @@ export default function Navbar() {
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
-                <Link key={item.name} href={item.href}>
-                  <a
-                    className={classNames(
-                      router.pathname === item.href
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "block rounded-md px-3 py-2 text-base font-medium",
-                    )}
-                    aria-current={
-                      router.pathname === item.href ? "page" : undefined
-                    }
-                  >
-                    {item.name}
-                  </a>
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={classNames(
+                    router.pathname === item.href
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium",
+                  )}
+                  aria-current={
+                    router.pathname === item.href ? "page" : undefined
+                  }
+                >
+                  {item.name}
                 </Link>
               ))}
             </div>
