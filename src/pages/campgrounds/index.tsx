@@ -148,7 +148,7 @@ const campgrounds = [
   // More campgrounds...
 ];
 
-export default function Example() {
+export default function CampgroundList() {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -159,9 +159,10 @@ export default function Example() {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {campgrounds.map((product) => (
             <div key={product.id} className="group relative">
-              <div className="aspect-h-1 aspect-w-1 lg:aspect-none relative w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
+              <div className="relative h-80 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
                 <Image
                   fill={true}
+                  className="object-cover"
                   src={product.imageSrc}
                   alt={product.imageAlt}
                 />
