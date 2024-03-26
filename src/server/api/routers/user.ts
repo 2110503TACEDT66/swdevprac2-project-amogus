@@ -124,7 +124,7 @@ export const userRouter = createTRPCRouter({
 
   getAllCampgrounds: publicProcedure.query(async ({ ctx }) => {
     const campgrounds = await ctx.db.campground.findMany();
-    return { campgrounds };
+    return campgrounds;
   }),
 
   getOneCampground: publicProcedure
@@ -137,7 +137,7 @@ export const userRouter = createTRPCRouter({
       const campground = await ctx.db.campground.findUnique({
         where: { id: input.id },
       });
-      return { campground };
+      return campground;
     }),
 
   getAvailableDates: publicProcedure
