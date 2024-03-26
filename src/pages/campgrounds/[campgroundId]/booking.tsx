@@ -20,9 +20,9 @@ const AddBookingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutate: bookCampground } = api.user.bookCampground.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       setIsLoading(false);
-      router.push("/your-bookings");
+      await router.push("/your-bookings");
     },
   });
 
