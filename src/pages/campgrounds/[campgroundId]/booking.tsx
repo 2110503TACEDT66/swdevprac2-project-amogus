@@ -1,22 +1,33 @@
 // pages/bookings/add.tsx
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { format } from "date-fns";
+import {
+  eachDayOfInterval,
+  format,
+  isBefore,
+  isEqual,
+  isSameDay,
+} from "date-fns";
 import { api } from "~/utils/api";
 import { string } from "zod";
 
 const AddBookingPage = () => {
   const router = useRouter();
   const { campgroundId } = router.query;
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutate: bookCampground } = api.user.bookCampground.useMutation({
     onSuccess: () => {
       setIsLoading(false);
-      router.push("/bookings");
+      router.push("/your-bookings");
     },
+  });
+
+  const { data: availableDates } = api.user.getAvailableDates.useQuery({
+    campgroundId: campgroundId as string,
+    startDate: new Date(startDate),
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,6 +39,21 @@ const AddBookingPage = () => {
       end: new Date(endDate),
     });
   };
+
+  const isDateRangeAvailable = (startDate: Date, endDate: Date) => {
+    if (!availableDates) return true;
+    const selectedDates = eachDayOfInterval({ start: startDate, end: endDate });
+    return selectedDates.every((date) =>
+      availableDates.availableDates.some((availableDate) =>
+        isSameDay(new Date(availableDate), date),
+      ),
+    );
+  };
+
+  const isSelectedRangeAvailable = isDateRangeAvailable(
+    new Date(startDate),
+    new Date(endDate),
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12 sm:px-6 lg:px-8">
@@ -46,8 +72,10 @@ const AddBookingPage = () => {
               <input
                 type="date"
                 id="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate.toISOString().split("T")[0]}
+                onChange={(e) => {
+                  setStartDate(new Date(e.target.value));
+                }}
                 required
                 className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
               />
@@ -60,22 +88,30 @@ const AddBookingPage = () => {
                 type="date"
                 id="endDate"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                }}
                 required
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                min={startDate.toISOString().split("T")[0]}
               />
             </div>
           </div>
           <div>
             <button
               type="submit"
-              disabled={isLoading}
-              className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              disabled={isLoading || !isSelectedRangeAvailable}
+              className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
               {isLoading ? "Booking..." : "Book Campground"}
             </button>
           </div>
         </form>
+        {!isSelectedRangeAvailable && (
+          <p className="mt-4 text-center text-sm text-red-500">
+            Selected date range is not available
+          </p>
+        )}
       </div>
     </div>
   );

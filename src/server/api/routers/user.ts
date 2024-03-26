@@ -194,7 +194,7 @@ export const userRouter = createTRPCRouter({
 
         currentDate = addDays(currentDate, 1);
       }
-
+      console.log(availableDates);
       return { availableDates };
     }),
 });
