@@ -19,7 +19,7 @@ export default function Campground() {
           <div className="relative h-96 w-80">
             <Image
               fill
-              src={campgroundData.image as string}
+              src={campgroundData.image}
               alt="Alt"
               className="object-cover"
             />

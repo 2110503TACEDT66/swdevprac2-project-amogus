@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { api } from "~/utils/api";
 
@@ -23,7 +22,6 @@ export default function Register() {
     const reader = new FileReader();
     reader.readAsDataURL(pfp);
     reader.onload = async () => {
-      const base64 = reader.result;
       await register.mutateAsync(
         {
           email,

@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const adminRouter = createTRPCRouter({
   // Get all users
@@ -39,7 +35,13 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const campground = await ctx.db.campground.create({
-        data: input,
+        data: {
+          name: input.name,
+          location: input.location,
+          image: input.image,
+          description: input.description,
+          price: input.price,
+        },
       });
       return { campground };
     }),
@@ -62,7 +64,7 @@ export const adminRouter = createTRPCRouter({
       });
       return { campground };
     }),
-  
+
   // Update a campground
   updateCampground: protectedProcedure
     .input(
@@ -82,7 +84,7 @@ export const adminRouter = createTRPCRouter({
       });
       return { campground };
     }),
-  
+
   // Delete a campground
   deleteCampground: protectedProcedure
     .input(
@@ -96,7 +98,7 @@ export const adminRouter = createTRPCRouter({
       });
       return { campground };
     }),
-  
+
   // Create a new booking
   createBooking: protectedProcedure
     .input(
