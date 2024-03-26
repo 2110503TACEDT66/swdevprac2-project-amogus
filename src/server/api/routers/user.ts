@@ -32,12 +32,14 @@ export const userRouter = createTRPCRouter({
       return { user };
     }),
 
-  getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.db.user.findUnique({
-      where: { id: ctx.session.user.id },
-    });
-    return { user };
-  }),
+  getCurrentUser: protectedProcedure
+    .input(z.object({}))
+    .query(async ({ ctx }) => {
+      const user = await ctx.db.user.findUnique({
+        where: { id: ctx.session.user.id },
+      });
+      return { user };
+    }),
 
   updateCurrentUser: protectedProcedure
     .input(

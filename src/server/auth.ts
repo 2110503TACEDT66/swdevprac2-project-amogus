@@ -34,6 +34,9 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  jwt: {
+    secret: env.NEXTAUTH_SECRET,
+  },
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -53,8 +56,10 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          console.log(credentials.password, user.password);
           const isValid = await compare(credentials.password, user.password);
           if (!isValid) {
+            console.log("invalid password");
             return null;
           }
           console.log(user);
