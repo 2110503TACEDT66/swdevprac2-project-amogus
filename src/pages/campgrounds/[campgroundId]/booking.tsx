@@ -7,6 +7,7 @@ import {
   isBefore,
   isEqual,
   isSameDay,
+  isAfter,
 } from "date-fns";
 import { api } from "~/utils/api";
 import { string } from "zod";
@@ -50,6 +51,9 @@ const AddBookingPage = () => {
     );
   };
 
+  const today = new Date();
+  const isStartDateValid =
+    isAfter(new Date(startDate), today) || isEqual(new Date(startDate), today);
   const isSelectedRangeAvailable = isDateRangeAvailable(
     new Date(startDate),
     new Date(endDate),
@@ -78,7 +82,13 @@ const AddBookingPage = () => {
                 }}
                 required
                 className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                min={today.toISOString().split("T")[0]}
               />
+              {!isStartDateValid && (
+                <p className="mt-1 text-sm text-red-500">
+                  Start date must be today or later
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="endDate" className="sr-only">
@@ -100,16 +110,20 @@ const AddBookingPage = () => {
           <div>
             <button
               type="submit"
-              disabled={isLoading || !isSelectedRangeAvailable}
+              disabled={
+                isLoading || !isSelectedRangeAvailable || !isStartDateValid
+              }
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
               {isLoading ? "Booking..." : "Book Campground"}
             </button>
           </div>
         </form>
-        {!isSelectedRangeAvailable && (
+        {(!isSelectedRangeAvailable || !isStartDateValid) && (
           <p className="mt-4 text-center text-sm text-red-500">
-            Selected date range is not available
+            {!isStartDateValid
+              ? "Start date must be today or later"
+              : "Selected date range is not available"}
           </p>
         )}
       </div>
