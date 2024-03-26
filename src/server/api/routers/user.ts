@@ -34,7 +34,7 @@ export const userRouter = createTRPCRouter({
     .input(z.object({}))
     .query(async ({ ctx }) => {
       const user = await ctx.db.user.findUnique({
-        where: { id: ctx.session.user.id },
+        where: { email: ctx.session.user.email },
       });
       return { user };
     }),
