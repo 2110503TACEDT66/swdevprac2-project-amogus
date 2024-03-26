@@ -56,7 +56,6 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          console.log(credentials.password, user.password);
           const isValid = await compare(credentials.password, user.password);
           if (!isValid) {
             console.log("invalid password");
