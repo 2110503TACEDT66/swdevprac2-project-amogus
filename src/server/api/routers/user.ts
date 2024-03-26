@@ -15,7 +15,6 @@ export const userRouter = createTRPCRouter({
         password: z.string(),
         name: z.string(),
         tel: z.string(),
-        image: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -26,7 +25,6 @@ export const userRouter = createTRPCRouter({
           password: hashPassword,
           name: input.name,
           tel: input.tel,
-          image: input.image,
         },
       });
       return { user };
