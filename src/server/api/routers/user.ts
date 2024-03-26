@@ -5,6 +5,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { addDays, isWithinInterval, startOfDay } from "date-fns";
+import { hash } from "bcrypt-ts";
 
 export const userRouter = createTRPCRouter({
   register: publicProcedure
@@ -18,8 +19,15 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const hashPassword = await hash(input.password, 10);
       const user = await ctx.db.user.create({
-        data: input,
+        data: {
+          email: input.email,
+          password: hashPassword,
+          name: input.name,
+          tel: input.tel,
+          image: input.image,
+        },
       });
       return { user };
     }),
