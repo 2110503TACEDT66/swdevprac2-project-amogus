@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { signOut, useSession } from "next-auth/react";
-import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 
 const navigation = [
@@ -28,7 +27,7 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
 
   console.log(session);
-  const { data: userInfo } = api.user.getCurrentUser.useQuery();
+  const { data: userInfo } = api.user.getCurrentUser.useQuery({});
 
   const router = useRouter();
 
