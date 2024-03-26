@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { format } from "date-fns";
-import { type Booking } from "@prisma/client";
+import { Prisma, type Booking } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import React from "react";
 
 const BookingCard: React.FC<{ booking: Booking; campgroundname: string }> = ({
   booking,
@@ -46,26 +46,15 @@ const BookingCard: React.FC<{ booking: Booking; campgroundname: string }> = ({
 };
 
 const AdminBookingsPage: React.FC = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
   const { data: allBookings, isLoading } = api.admin.getAllBookings.useQuery();
-
-  useEffect(() => {
-    if (allBookings) {
-      setBookings(allBookings.bookings);
-    }
-  }, [allBookings]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="container mx-auto px-12 pt-24">
       <h1 className="mb-8 text-3xl font-bold">All Bookings</h1>
-      {bookings.length === 0 ? (
+      {!allBookings || allBookings.length === 0 ? (
         <p>There are no bookings.</p>
       ) : (
-        bookings.map((booking) => (
+        allBookings.map((booking) => (
           <BookingCard
             key={booking.id}
             booking={booking}
@@ -77,18 +66,15 @@ const AdminBookingsPage: React.FC = () => {
   );
 };
 
+type BookingProps = Prisma.BookingGetPayload<{
+  include: { campground: true };
+}>;
+
 const UserBookingsPage: React.FC = () => {
   const { data: session } = useSession();
-  const [bookings, setBookings] = useState<Booking[]>([]);
 
   const { data: userBookings, isLoading } =
     api.user.getCurrentUserBookings.useQuery();
-
-  useEffect(() => {
-    if (userBookings) {
-      setBookings(userBookings.bookings);
-    }
-  }, [userBookings]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -97,10 +83,10 @@ const UserBookingsPage: React.FC = () => {
   return (
     <div className="container mx-auto px-12 pt-24">
       <h1 className="mb-8 text-3xl font-bold">Your Bookings</h1>
-      {bookings.length === 0 ? (
+      {!userBookings || userBookings.length === 0 ? (
         <p>You have no bookings.</p>
       ) : (
-        bookings.map((booking) => (
+        userBookings.map((booking) => (
           <BookingCard
             key={booking.id}
             booking={booking}

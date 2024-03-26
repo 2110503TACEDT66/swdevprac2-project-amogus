@@ -133,7 +133,7 @@ export const adminRouter = createTRPCRouter({
         campground: true,
       },
     });
-    return { bookings };
+    return bookings;
   }),
 
   // Get a specific booking by ID
