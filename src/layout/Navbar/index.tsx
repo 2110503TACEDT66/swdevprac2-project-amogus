@@ -2,15 +2,15 @@ import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
-  BellIcon,
   UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { api } from "~/utils/api";
+import { api } from "../../utils/api";
 import { signOut, useSession } from "next-auth/react";
 import { type User } from "@prisma/client";
+import React from "react";
 
 const navigation = [
   { name: "Browse", href: "/campgrounds" },
@@ -18,15 +18,9 @@ const navigation = [
   { name: "Among Us", href: "/among-us" },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Navbar() {
   const { data: session } = useSession();
   const [user, setUser] = useState<User | null>(null);
-
-  console.log(session);
   const { data: userInfo } = api.user.getCurrentUser.useQuery({});
 
   const router = useRouter();
@@ -63,12 +57,13 @@ export default function Navbar() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={classNames(
+                        className={`
+                        ${
                           router.pathname === item.href
                             ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "rounded-md px-3 py-2 text-sm font-medium",
-                        )}
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                        }
+                      `}
                         aria-current={
                           router.pathname === item.href ? "page" : undefined
                         }
@@ -103,10 +98,7 @@ export default function Navbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <button
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
-                              )}
+                              className={`${active ? "bg-gray-100" : ""} block px-4 py-2 text-sm text-gray-700`}
                               onClick={() => signOut()}
                             >
                               Sign out
@@ -142,12 +134,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={classNames(
-                    router.pathname === item.href
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium",
-                  )}
+                  className={`${router.pathname === item.href ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"} block rounded-md px-3 py-2 text-base font-medium`}
                   aria-current={
                     router.pathname === item.href ? "page" : undefined
                   }
