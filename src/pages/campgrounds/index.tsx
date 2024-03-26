@@ -3,7 +3,8 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 
 export default function CampgroundList() {
-  const { data: campground } = api.user.getAllCampgrounds.useQuery({});
+  const { data: campground } = api.user.getAllCampgrounds.useQuery();
+  const { data: user } = api.user.getCurrentUser.useQuery({});
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -11,17 +12,19 @@ export default function CampgroundList() {
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Campgrounds List
           </h2>
-          <Link
-            href="/campgrounds/create"
-            className="rounded-md bg-[#799496] p-2 text-white hover:bg-[#ACC196]"
-          >
-            Add Campground
-          </Link>
+          {user?.user?.role == "ADMIN" && (
+            <Link
+              href="/campgrounds/create"
+              className="rounded-md bg-[#799496] p-2 text-white hover:bg-[#ACC196]"
+            >
+              Add Campground
+            </Link>
+          )}
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {campground?.map((product) => (
-            <Link href={`/campgrounds/${product.id}`}>
+            <Link href={`/campgrounds/${product.id}`} key={product.id}>
               <div
                 key={product.id}
                 className="group relative rounded-md bg-gray-100 p-4"
