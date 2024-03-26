@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { signOut, useSession } from "next-auth/react";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 
 const navigation = [
   { name: "Browse", href: "/campgrounds" },
@@ -117,12 +117,20 @@ export default function Navbar() {
                     </Transition>
                   </Menu>
                 ) : (
-                  <Link
-                    href="/login"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Sign in
-                  </Link>
+                  <div className="flex">
+                    <Link
+                      href="/login"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Register
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
