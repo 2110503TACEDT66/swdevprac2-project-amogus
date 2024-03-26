@@ -30,7 +30,6 @@ export default function Register() {
           password,
           name: username,
           tel,
-          image: base64 as string,
         },
         {
           onSuccess: () => {
@@ -62,28 +61,10 @@ export default function Register() {
           >
             <div>
               <label
-                htmlFor="profile"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Profile Picture
-              </label>
-              <div className="mt-2">
-                <input
-                  id="pfp"
-                  name="pfp"
-                  type="file"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
                 htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Username
+                Name
               </label>
               <div className="mt-2">
                 <input
