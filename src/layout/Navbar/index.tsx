@@ -3,6 +3,8 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
 
 const navigation = [
   { name: "Browse", href: "/campgrounds" },
@@ -15,6 +17,9 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const { data: session } = useSession();
+  console.log(session);
+
   const router = useRouter();
   console.log(router.pathname);
   return (

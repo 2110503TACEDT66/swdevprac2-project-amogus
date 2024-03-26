@@ -1,15 +1,10 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-import { api } from "~/utils/api";
-
 export default function Home() {
   return (
     <div className="relative px-6 pt-14 lg:px-8">
       <motion.div
-        className="absolute z-[-1] inset-0 bg-[url(/hero.png)]"
+        className="absolute inset-0 z-[-1] bg-[url(/hero.png)]"
         style={{
           backgroundPosition: "0px 0px",
         }}

@@ -5,16 +5,15 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env.js";
 import { db } from "~/server/db";
-import bcrypt from "bcrypt-ts";
+import { compare } from "bcrypt-ts";
 import { Adapter } from "next-auth/adapters";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: DefaultSession["user"] &{
+    user: DefaultSession["user"] & {
       id: string;
       // ...other properties
       // role: UserRole;
@@ -28,48 +27,39 @@ declare module "next-auth" {
 }
 
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
   },
-  adapter: PrismaAdapter(db) as Adapter,
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/login",
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email", placeholder: "Email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (credentials) {
           const user = await db.user.findUnique({
-            where: { email: credentials.email },
+            where: {
+              email: credentials.email,
+            },
           });
-
+          console.log(user);
           if (!user) {
-            throw new Error("No user found");
+            return null;
           }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            throw new Error("Invalid password");
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          const isValid = await compare(credentials.password, user.password);
+          if (!isValid) {
+            return null;
           }
-
+          console.log(user);
           return user;
         }
-
         return null;
       },
     }),
