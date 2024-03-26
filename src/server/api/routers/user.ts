@@ -34,7 +34,7 @@ export const userRouter = createTRPCRouter({
     .input(z.object({}))
     .query(async ({ ctx }) => {
       const user = await ctx.db.user.findUnique({
-        where: { email: ctx.session.user.email },
+        where: { email: ctx.session.user.email! },
       });
       return { user };
     }),
@@ -49,7 +49,7 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.update({
-        where: { id: ctx.session.user.id },
+        where: { email: ctx.session.user.email! },
         data: input,
       });
       return { user };
@@ -66,7 +66,7 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // check if user is not already booked more than 3 campgrounds
       const bookings = await ctx.db.booking.findMany({
-        where: { createdById: ctx.session.user.id },
+        where: { createdByEmail: ctx.session.user.email! },
       });
       if (bookings.length >= 3) {
         throw new Error("You can't book more than 3 campgrounds");
@@ -74,7 +74,7 @@ export const userRouter = createTRPCRouter({
 
       const booking = await ctx.db.booking.create({
         data: {
-          createdById: ctx.session.user.id,
+          createdByEmail: ctx.session.user.email!,
           campgroundId: input.campgroundId,
           startDate: input.start,
           endDate: input.end,
@@ -85,7 +85,10 @@ export const userRouter = createTRPCRouter({
 
   getCurrentUserBookings: protectedProcedure.query(async ({ ctx }) => {
     const bookings = await ctx.db.booking.findMany({
-      where: { createdById: ctx.session.user.id },
+      where: { createdByEmail: ctx.session.user.email! },
+      include: {
+        campground: true,
+      },
     });
     return { bookings };
   }),
@@ -99,6 +102,9 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const booking = await ctx.db.booking.delete({
         where: { id: input.bookingId },
+        include: {
+          campground: true,
+        },
       });
       return { booking };
     }),
