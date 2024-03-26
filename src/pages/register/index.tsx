@@ -14,24 +14,35 @@ export default function Register() {
     const tel = (document.getElementById("tel") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement)
       .value;
-
-    await register.mutateAsync(
-      {
-        email,
-        password,
-        name: username,
-        tel,
-      },
-      {
-        onSuccess: () => {
-          alert("User registered successfully");
-          void router.push("/login");
+    const pfp = (document.getElementById("pfp") as HTMLInputElement)
+      ?.files?.[0];
+    if (!pfp) {
+      alert("Please upload a profile picture");
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(pfp);
+    reader.onload = async () => {
+      const base64 = reader.result;
+      await register.mutateAsync(
+        {
+          email,
+          password,
+          name: username,
+          tel,
+          image: base64 as string,
         },
-        onError: (error) => {
-          alert(error.message);
+        {
+          onSuccess: () => {
+            alert("User registered successfully");
+            void router.push("/login");
+          },
+          onError: (error) => {
+            alert(error.message);
+          },
         },
-      },
-    );
+      );
+    };
   };
   return (
     <>
@@ -49,6 +60,24 @@ export default function Register() {
             method="POST"
             onSubmit={registerHandler}
           >
+            <div>
+              <label
+                htmlFor="profile"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Profile Picture
+              </label>
+              <div className="mt-2">
+                <input
+                  id="pfp"
+                  name="pfp"
+                  type="file"
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="email"
