@@ -1,194 +1,47 @@
 import Image from "next/image";
 import Link from "next/link";
-
-const campgrounds = [
-  {
-    id: 1,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 2,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 3,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 4,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 5,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 6,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 7,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 8,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 9,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 10,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 11,
-    name: "Test campground",
-    address: "1234 Test St",
-    province: "BC",
-    postalcode: "10000",
-    tel: "123-456-7890",
-    region: "USA",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  // More campgrounds...
-];
+import { api } from "~/utils/api";
 
 export default function CampgroundList() {
+  const { data: campground } = api.user.getAllCampgrounds.useQuery({});
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-          Campgrounds List
-        </h2>
+        <div className="flex flex-row items-center gap-8">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            Campgrounds List
+          </h2>
+          <Link href="/campgrounds/create" className="bg-[#799496] p-2 rounded-md text-white hover:bg-[#ACC196]">
+            Add Campground
+          </Link>
+        </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {campgrounds.map((product) => (
-            <div key={product.id} className="group relative">
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          {campground?.map((product) => (
+            <div
+              key={product.id}
+              className="group relative rounded-md bg-gray-100 p-4"
+            >
               <div className="relative h-80 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                <Image
-                  fill={true}
-                  className="object-cover"
-                  src={product.imageSrc}
-                  alt={product.imageAlt}
+                <img
+                  className="h-full w-full object-cover"
+                  src={product.image}
                 />
               </div>
               <div className="mt-4 flex justify-between">
                 <div>
                   <h3 className="text-sm text-gray-700">
                     <Link href={`/campgrounds/${product.id}`}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
+                      <span aria-hidden="true">{product.name}</span>
                     </Link>
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {product.address},
+
+                  <p className="text-sm text-gray-500">
+                    {product.description},
                   </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {product.province},
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {product.postalcode},
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">{product.region}</p>
+                  <p className="text-sm text-gray-500">{product.location},</p>
+                  <p className="text-sm text-gray-500">{product.price}</p>
                 </div>
-                <p className="text-sm font-medium text-gray-900">
-                  {product.tel}
-                </p>
               </div>
             </div>
           ))}
