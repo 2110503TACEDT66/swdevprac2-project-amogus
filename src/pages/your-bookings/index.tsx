@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { Prisma, type Booking } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React from "react";
+import Link from "next/link";
 
 const BookingCard: React.FC<{ booking: Booking; campgroundname: string }> = ({
   booking,
@@ -40,6 +41,12 @@ const BookingCard: React.FC<{ booking: Booking; campgroundname: string }> = ({
         >
           Cancel Booking
         </button>
+        <Link
+          href={`/your-bookings/edit?id=${booking.id}`}
+          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
+          Edit
+        </Link>
       </div>
     </div>
   );
