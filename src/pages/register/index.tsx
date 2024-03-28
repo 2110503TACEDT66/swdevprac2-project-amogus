@@ -13,33 +13,23 @@ export default function Register() {
     const tel = (document.getElementById("tel") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement)
       .value;
-    const pfp = (document.getElementById("pfp") as HTMLInputElement)
-      ?.files?.[0];
-    if (!pfp) {
-      alert("Please upload a profile picture");
-      return;
-    }
-    const reader = new FileReader();
-    reader.readAsDataURL(pfp);
-    reader.onload = async () => {
-      await register.mutateAsync(
-        {
-          email,
-          password,
-          name: username,
-          tel,
+    await register.mutateAsync(
+      {
+        email,
+        password,
+        name: username,
+        tel,
+      },
+      {
+        onSuccess: () => {
+          alert("User registered successfully");
+          void router.push("/login");
         },
-        {
-          onSuccess: () => {
-            alert("User registered successfully");
-            void router.push("/login");
-          },
-          onError: (error) => {
-            alert(error.message);
-          },
+        onError: (error) => {
+          alert(error.message);
         },
-      );
-    };
+      },
+    );
   };
   return (
     <>
