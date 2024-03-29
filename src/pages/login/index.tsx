@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { api } from "~/utils/api";
 
-export default function Register() {
+export default function Login() {
   const router = useRouter();
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
